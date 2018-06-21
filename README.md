@@ -5,8 +5,8 @@ A javascript library to encode the output of Web Audio API nodes in Ogg Opus or 
 
 #### Libraries Used
 
-- Libopus: v1.2.1 compiled with emscripten 1.37.28
-- speexDSP: 1.2RC3 compiled with emscripten 1.37.28
+- Libopus: v1.2.1 compiled with emscripten 1.38.1
+- speexDSP: 1.2RC3 compiled with emscripten 1.38.1
 
 #### Required Files
 
@@ -39,6 +39,7 @@ Creates a recorder instance.
 - **mediaTrackConstraints**       - (*optional*) Object to specify [media track constraints](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints). Defaults to `true`.
 - **monitorGain**                 - (*optional*) Sets the gain of the monitoring output. Gain is an a-weighted value between `0` and `1`. Defaults to `0`
 - **numberOfChannels**            - (*optional*) The number of channels to record. `1` = mono, `2` = stereo. Defaults to `1`. Maximum `2` channels are supported.
+- **recordingGain**               - (*optional*) Sets the gain of the recording input. Gain is an a-weighted value between `0` and `1`. Defaults to `1`
 
 
 #### Config options for OGG OPUS encoder
@@ -63,16 +64,28 @@ Creates a recorder instance.
 #### Instance Methods
 
 ```js
+rec.clearStream()
+```
+
+**clearStream** will stop and delete the stream as well as close the audio context. You will only ever call this manually if you have `config.leaveStreamOpen` set to `true`.
+
+```js
 rec.pause()
 ```
 
-**pause** will keep the stream and monitoring alive, but will not be recording the buffers. Will raise the pause event. Subsequent calls to **resume** will add to the current recording.
+**pause** will keep the stream and monitoring alive, but will not be recording the buffers. Will call the `onpause` callback when paused. Subsequent calls to **resume** will add to the current recording.
 
 ```js
 rec.resume()
 ```
 
-**resume** will resume the recording if paused. Will raise the resume event.
+**resume** will resume the recording if paused. Will call the `onresume` callback when recording is resumed.
+
+```js
+rec.setRecordingGain( gain )
+```
+
+**setRecordingGain** will set the volume on what will be passed to the recorder. Gain is an a-weighted value between `0` and `1`.
 
 ```js
 rec.setMonitorGain( gain )
@@ -90,13 +103,7 @@ rec.start( [sourceNode] )
 rec.stop()
 ```
 
-**stop** will cease capturing audio and disable the monitoring and mic input stream. Will request the recorded data and then terminate the worker once the final data has been published. Will raise the `stop` event when stopped.
-
-```js
-rec.clearStream()
-```
-
-**clearStream** will stop and delete the stream as well as close the audio context. You will only ever call this manually if you have `config.leaveStreamOpen` set to `true`.
+**stop** will cease capturing audio and disable the monitoring and mic input stream. Will request the recorded data and then terminate the worker once the final data has been published. Will call the `onstop` callback when stopped.
 
 
 ---------
@@ -129,7 +136,6 @@ rec.onresume()
 ```
 
 A callback which occurs when media recording resumes after being paused.
-
 
 ```js
 rec.onstart()

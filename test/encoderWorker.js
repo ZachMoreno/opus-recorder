@@ -139,4 +139,162 @@ describe('encoderWorker', function() {
     getEncoder();
   });
 
+  it('should set granule position to 0', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(0);
+        expect(dataView.getInt32(10, true)).to.equal(0);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = 0;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set granule position to -1', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(4294967295);
+        expect(dataView.getInt32(10, true)).to.equal(-1);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = -1;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set granule position to -2^32', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(0);
+        expect(dataView.getInt32(10, true)).to.equal(-1);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = -4294967296;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set granule position to -2^32 - 1', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(4294967295);
+        expect(dataView.getInt32(10, true)).to.equal(-2);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = -4294967297;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set granule position to 2^32 - 1', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(4294967295);
+        expect(dataView.getInt32(10, true)).to.equal(0);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = 4294967295;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set granule position to 2^32', function (done) {
+    var pageBufferCount = 0;
+
+    global.postMessage = function(page) {
+      pageBufferCount++;
+
+      if (pageBufferCount == 3) {
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(6, true)).to.equal(0);
+        expect(dataView.getInt32(10, true)).to.equal(1);
+        done();
+      }
+    };
+
+    getEncoder().then(function(encoder) {
+      encoder.lastPositiveGranulePosition = 1;
+      encoder.granulePosition = 4294967296;
+      encoder.generatePage();
+    });
+  });
+
+  it('should set serial minimum value as 0', function (done) {
+    sandbox.stub(Math, 'random').returns(0);
+    var messageRecieved = false;
+
+    global.postMessage = function(page){
+      if (!messageRecieved) {
+        messageRecieved = true;
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(14, true)).to.equal(0);
+        done();
+      }
+    }
+
+    getEncoder();
+  });
+
+  it('should set serial maximum value as 2^32 - 1', function (done) {
+    sandbox.stub(Math, 'random').returns(0.9999999999999);
+    var messageRecieved = false;
+
+    global.postMessage = function(page){
+      if (!messageRecieved) {
+        messageRecieved = true;
+        var dataView = new DataView(page.buffer);
+        expect(dataView.getUint32(14, true)).to.equal(4294967295);
+        done();
+      }
+    }
+
+    getEncoder();
+  });
+
 });
