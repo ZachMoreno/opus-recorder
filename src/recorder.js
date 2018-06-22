@@ -16,6 +16,7 @@ var Recorder = function( config ){
     encoderApplication: 2049,
     encoderFrameSize: 20,
     encoderPath: 'encoderWorker.min.js',
+    processorPath: 'processorWorklet.min.js',
     encoderSampleRate: 48000,
     leaveStreamOpen: false,
     maxBuffersPerPage: 40,
@@ -35,6 +36,11 @@ var Recorder = function( config ){
 // Static Methods
 Recorder.isRecordingSupported = function(){
   return AudioContext && global.navigator && global.navigator.mediaDevices && global.navigator.mediaDevices.getUserMedia && global.WebAssembly;
+};
+
+Recorder.isWorkletSupported = function(){
+  let context = new OfflineAudioContext( 1, 1, 44100 );
+  return Boolean( context.audioWorklet && typeof context.audioWorklet.addModule === 'function');
 };
 
 

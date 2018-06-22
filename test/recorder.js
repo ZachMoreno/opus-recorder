@@ -23,6 +23,8 @@ describe('Recorder unsupported', function(){
 
 });
 
+// Recorder.isWorkletSupported()
+
 describe('Recorder', function(){
 
   var sandbox = sinon.sandbox.create();
@@ -119,6 +121,7 @@ describe('Recorder', function(){
     expect(rec.config).to.have.property('numberOfChannels', 1);
     expect(rec.config).to.have.property('encoderSampleRate', 48000);
     expect(rec.config).to.have.property('encoderPath', 'encoderWorker.min.js');
+    expect(rec.config).to.have.property('processorPath', 'processorWorklet.min.js');
     expect(rec.config).to.have.property('streamPages', false);
     expect(rec.config).to.have.property('leaveStreamOpen', false);
     expect(rec.config).to.have.property('maxBuffersPerPage', 40);
@@ -144,6 +147,7 @@ describe('Recorder', function(){
     expect(rec.config).to.have.property('numberOfChannels', 1);
     expect(rec.config).to.have.property('encoderSampleRate', 48000);
     expect(rec.config).to.have.property('encoderPath', 'encoderWorker.min.js');
+    expect(rec.config).to.have.property('processorPath', 'processorWorklet.min.js');
     expect(rec.config).to.have.property('streamPages', false);
     expect(rec.config).to.have.property('leaveStreamOpen', false);
     expect(rec.config).to.have.property('maxBuffersPerPage', 40);
@@ -163,6 +167,7 @@ describe('Recorder', function(){
       bitRate: 16000,
       encoderSampleRate: 16000,
       encoderPath: "../dist/encoderWorker.min.js",
+      processorPath: "../dist/processorWorklet.min.js",
       streamPages: true,
       leaveStreamOpen: false,
       maxBuffersPerPage: 1000,
@@ -180,6 +185,7 @@ describe('Recorder', function(){
     expect(rec.config).to.have.property('bitRate', 16000);
     expect(rec.config).to.have.property('encoderSampleRate', 16000);
     expect(rec.config).to.have.property('encoderPath', '../dist/encoderWorker.min.js');
+    expect(rec.config).to.have.property('processorPath', '../dist/processorWorklet.min.js');
     expect(rec.config).to.have.property('streamPages', true);
     expect(rec.config).to.have.property('leaveStreamOpen', false);
     expect(rec.config).to.have.property('maxBuffersPerPage', 1000);

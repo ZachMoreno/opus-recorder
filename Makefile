@@ -27,8 +27,12 @@ WAVE_WORKER_MIN=$(OUTPUT_DIR)/waveWorker.min.js
 WAVE_WORKER=$(OUTPUT_DIR_UNMINIFIED)/waveWorker.js
 WAVE_WORKER_SRC=$(INPUT_DIR)/waveWorker.js
 
+PROCESSOR_WORKLET_MIN=$(OUTPUT_DIR)/processorWorklet.min.js
+PROCESSOR_WORKLET=$(OUTPUT_DIR_UNMINIFIED)/processorWorklet.js
+PROCESSOR_WORKLET_SRC=$(INPUT_DIR)/processorWorklet.js
 
-default: $(LIBOPUS_ENCODER) $(LIBOPUS_ENCODER_MIN) $(LIBOPUS_DECODER) $(LIBOPUS_DECODER_MIN) $(RECORDER) $(RECORDER_MIN) $(WAVE_WORKER) $(WAVE_WORKER_MIN) test
+
+default: $(LIBOPUS_ENCODER) $(LIBOPUS_ENCODER_MIN) $(LIBOPUS_DECODER) $(LIBOPUS_DECODER_MIN) $(RECORDER) $(RECORDER_MIN) $(WAVE_WORKER) $(WAVE_WORKER_MIN) $(PROCESSOR_WORKLET) $(PROCESSOR_WORKLET_MIN) test
 
 clean:
 	rm -rf $(OUTPUT_DIR) $(OUTPUT_DIR_UNMINIFIED) $(LIBOPUS_DIR) $(LIBSPEEXDSP_DIR)
@@ -81,3 +85,9 @@ $(WAVE_WORKER): $(WAVE_WORKER_SRC)
 
 $(WAVE_WORKER_MIN): $(WAVE_WORKER_SRC)
 	npm run webpack -- --config webpack.config.js -p --output-library WaveWorker $(WAVE_WORKER_SRC) -o $@
+
+$(PROCESSOR_WORKLET): $(PROCESSOR_WORKLET_SRC)
+	npm run webpack -- --config webpack.config.js -p --output-library ProcessorWorklet $(PROCESSOR_WORKLET_SRC) -o $@
+
+$(PROCESSOR_WORKLET_MIN): $(PROCESSOR_WORKLET_SRC)
+	npm run webpack -- --config webpack.config.js -p --output-library ProcessorWorklet $(PROCESSOR_WORKLET_SRC) -o $@
